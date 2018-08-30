@@ -14,7 +14,8 @@ RUN mkdir -p /usr/local/opt && \
 	./configure --prefix=/opt --disable-ipv6 --disable-snmpv1 --with-defaults && \
 	make -j$(nproc) && \
 	make install && \
-	rm -rf /usr/local/opt/share/man
+	rm -rf /opt/share/man && \
+	rm -rf /opt/include
 
 COPY snmpd.conf /opt/etc/snmp/snmpd.conf
 
