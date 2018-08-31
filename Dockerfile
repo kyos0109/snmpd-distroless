@@ -2,13 +2,14 @@ FROM centos:7.5.1804 as base
 
 ENV SNMP_VERIOSN 5.7.3
 
+# https://nchc.dl.sourceforge.net/project/net-snmp/net-snmp/5.7.3/net-snmp-5.7.3.tar.gz
 ADD net-snmp-${SNMP_VERIOSN}.tar.gz /tmp
 
 RUN yum update -y && \
 	yum install file gcc make -y && \
     yum clean all
 
-RUN mkdir -p /usr/local/opt && \
+RUN mkdir -p /opt && \
 	cd /tmp/net-snmp-${SNMP_VERIOSN} && \
 	find . -type f -regex ".*\.c" -print0 | xargs -0 sed -i 's/\/proc/\/host_proc/g' && \
 	./configure --prefix=/opt --disable-ipv6 --disable-snmpv1 --with-defaults && \
@@ -27,4 +28,4 @@ VOLUME /var/net-snmp
 
 EXPOSE 161/udp 161
 
-CMD [ "/opt/sbin/snmpd", "-f", "-Loe", "-c", "/opt/etc/snmp/snmpd.conf" ]
+ENTRYPOINT [ "/opt/sbin/snmpd", "-f", "-Loe", "-c", "/opt/etc/snmp/snmpd.conf" ]
